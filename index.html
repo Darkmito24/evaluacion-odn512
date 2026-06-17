@@ -23,13 +23,13 @@ input[type="text"]:focus { border-color: #1D9E75; }
 .student-chip { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; transition: all 0.12s; user-select: none; }
 .student-chip:hover { border-color: #1D9E75; color: #1D9E75; }
 .student-chip.selected { background: #1D9E75; color: #fff; border-color: #1D9E75; }
-.table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #e8e8e6; }
+.table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #e8e8e6; overflow: visible; }
 table { border-collapse: collapse; width: 100%; min-width: 500px; }
 th, td { border: 1px solid #e8e8e6; }
 th.criteria-col { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 500; color: #666; background: #f9f9f7; min-width: 180px; position: sticky; left: 0; z-index: 2; }
 th.student-col { text-align: center; padding: 8px 6px; font-size: 11px; font-weight: 500; color: #1a1a1a; background: #f9f9f7; min-width: 130px; line-height: 1.4; }
 td.criteria-label { padding: 10px 12px; font-size: 12px; color: #555; background: #f9f9f7; position: sticky; left: 0; z-index: 1; line-height: 1.4; }
-td.score-cell { text-align: center; padding: 8px 4px; vertical-align: middle; }
+td.score-cell { text-align: center; padding: 8px 4px; vertical-align: middle; overflow: visible; }
 .score-btns { display: flex; gap: 3px; justify-content: center; }
 .sb-wrap { position: relative; display: inline-block; }
 .sb { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #ddd; background: #fff; font-size: 13px; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; transition: all 0.1s; font-family: inherit; }
@@ -50,12 +50,9 @@ tr.total-row td { background: #f9f9f7; font-size: 12px; font-weight: 600; text-a
 .bottom-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
 .send-btn { padding: 10px 24px; background: #1D9E75; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: inherit; font-weight: 500; }
 .send-btn:hover { background: #158a63; }
-.send-btn:disabled { opacity: 0.4; cursor: not-allowed; background: #1D9E75; }
-.status-msg { font-size: 12px; color: #666; }
+.status-msg { font-size: 12px; color: #666; line-height: 1.6; }
 .progress-bar { height: 4px; background: #e8e8e6; border-radius: 2px; margin-top: 10px; overflow: hidden; display: none; }
 .progress-fill { height: 100%; background: #1D9E75; border-radius: 2px; transition: width 0.3s; width: 0%; }
-a.sheet-link { color: #1D9E75; text-decoration: none; font-size: 13px; font-weight: 500; }
-a.sheet-link:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -67,8 +64,7 @@ a.sheet-link:hover { text-decoration: underline; }
   <div class="card">
     <div class="top-bar">
       <label for="docente-in">Nombre docente</label>
-      <input type="text" id="docente-in" class="docente-input" placeholder="Tu nombre completo" oninput="checkSend()" />
-      
+      <input type="text" id="docente-in" class="docente-input" placeholder="Tu nombre completo" />
     </div>
   </div>
   <div class="card">
@@ -78,7 +74,7 @@ a.sheet-link:hover { text-decoration: underline; }
   </div>
   <div id="table-area"></div>
   <div class="bottom-bar">
-    <button class="send-btn" id="send-btn" disabled onclick="sendAll()">Enviar a Google Sheets</button>
+    <button class="send-btn" id="send-btn" onclick="sendAll()">Enviar a Google Sheets</button>
     <span class="status-msg" id="status-msg"></span>
   </div>
   <div class="progress-bar" id="progress-bar">
@@ -87,53 +83,156 @@ a.sheet-link:hover { text-decoration: underline; }
 </div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSRXAdTrNb72k00YZpfARRyQSjJQrClE9xA2fkhy7w1XVA1BYVd-qQKu2kwK8h1HqFgg/exec";
-const STUDENTS = ["MORIN JOSEFA ALBILLAR BRAÑAS","MILLARAY BELÉN ALVEAR MONTOYA","FRANCESCA IGNACIA ANJARÍ CIOCCA","IARA VALENTINA ARANCIBIA TELLO","JAVIERA NICOL ARANDA FERNÁNDEZ","FRANCISCA CONSTANZA ARRIAGADA CÓRDOVA","CONSTANZA BELÉN ASTETE ESTAY","ANGELA SOFÍA BASUALDO BAZAES","CONSTANZA ANTONIA BELLO MENESES","DAYLIN IGNACIA BRAVO ARAVENA","CATALINA ANTONIA CABEZAS QUINTANA","JOSÉ IGNACIO CATALÁN GUINEO","SARAY NOEMÍ CATALÁN MÉNDEZ","FRANCISCA ROCIO DELGADO BARRIENTOS","FLAVIA ALEJANDRA DÍAZ BARRAZA","JAVIERA ALEJANDRA DÍAZ GAETE","IGNACIA PAZ BELÉN ELGUETA LAZO","VASTI SOFÍA ANTONIA ESCOBAR AHUMADA","MATÍAS FELIPE ESTRADA PÉREZ","BETZABET ELIZABETH ETCHEVERRY SAAVEDRA","JOAQUÍN ESTEBAN FUENZALIDA CAMPOS","AMBAR TAÍS GUZMÁN MORALES","VALERIA ESPERANZA HERRERA VERGARA","FRANCISCA IGNACIA HOLA MELLADO","IGNACIO ALFONSO LANAS DÍAZ","VALERIA CATALINA LARA GARRIDO","ANGELA VICTORIA LÓPEZ SAAVEDRA","FERNANDA IGNACIA MELLA ÁLVAREZ","ROBERTO SEBASTIÁN MELLADO VEGA","CORALY ANDREA MUÑOZ VIELMA","PAULA ANDREA OJEDA GAMARRA","NICOLETTE STEFANIA ORTEGA ORTEGA","BEATRIZ IGNACIA PARADA ROJAS","ANTONIA ROCÍO PAVIE SANTANA","ISIDORA PAZ RODRÍGUEZ BRAVO","ABEL ALEXIS ROJAS ARANCIBIA","DIEGO AUGUSTO ROJAS MOYA","DANIELLA CONSTANZA ROJAS ROJAS","NOSLEN ELIZABETH RUBIO ESCOBAR","FRANCO ALEXANDER SANDOVAL PIZARRO","YERISSIM FERNANDA SILVA BRAVO","CAMILO IGNACIO TORO AEDO","JOAQUÍN ALONSO TORRES LEÓN","MARTINA PAZ VALDÉS DURÁN","VALENTINA PAZ VARGAS RAMÍREZ","BENJAMÍN MAXIMILIANO VARGAS RODRÍGUEZ","MARIAN FERNANDA VERGARA VEGA","ANTONIA SCARLETT ZAPATA CUETO","FRANCISCA TRONCOSO"];
-const CRITERIA = [
-  { key:"c1", label:"Planificación de la acción clínica", pct:"20%", tooltips:["No planifica su sesión clínica y carece del instrumental necesario para ejecutar su acción.","Planificación poco realista sin considerar los procedimientos o su complejidad. Carece del instrumental necesario.","Planificación poco realista sin considerar los procedimientos o su complejidad. Faltan entre 2 a 3 instrumentales y/o materiales.","Planificación realista y acorde a los protocolos indicados. Al menos falta 1 material o instrumental para realizar la acción.","Planificación realista y acorde a los protocolos para cada procedimiento y su complejidad. Tiene siempre todo el instrumental necesario."] },
-  { key:"c2", label:"Comunicación en ambiente clínico", pct:"15%", tooltips:["No establece comunicación fluida ni efectiva en la clínica. No mantiene el respeto ni utiliza lenguaje adecuado.","Comunicación poco fluida y efectiva con dificultades al expresar sus ideas. Mantiene el respeto pero hay falencias en lenguaje técnico.","Comunicación poco fluida en el ambiente clínico con dificultades al expresar sus ideas. Mantiene el respeto y lenguaje técnico.","Comunicación fluida y efectiva en el ambiente clínico, expresa sus ideas claramente, de manera sintética y respetuosa, con algunas falencias en lenguaje técnico.","Comunicación fluida y efectiva en el ambiente clínico, expresa sus ideas claramente, de manera sintética, respetuosa y utilizando lenguaje técnico."] },
-  { key:"c3", label:"Retroalimentación y autocrítica", pct:"15%", tooltips:["Nula capacidad de recibir retroalimentación, omite la guía docente, sin reflexión ni autocrítica a su práctica clínica.","Demuestra incomodidad al recibir retroalimentación, omite la guía docente, con escasa capacidad reflexiva y autocrítica.","Desinteresado al recibir retroalimentación, omite la guía docente, dificultando la mejora mediante práctica reflexiva y autocrítica.","Capaz de recibir retroalimentación, incorpora parcialmente los comentarios a su práctica. Presenta capacidad de autocrítica.","Demuestra capacidad de recibir retroalimentación, incorporando comentarios del docente a su práctica clínica, mejorando mediante práctica reflexiva y autocrítica."] },
-  { key:"c4", label:"Registro clínico", pct:"20%", tooltips:["Registros clínicos desordenados, desactualizados y sin validar en todos los pacientes. Rompe la confidencialidad. Falta gestión de presupuestos.","Registros clínicos desordenados, desactualizados y no validados en la mayoría de los pacientes. Rompe la confidencialidad. Deficiente gestión de presupuestos.","Registros clínicos desordenados sin actualizar ni validar en al menos el 50% de sus pacientes, con presupuestos sin gestionar.","Registros clínicos validados, ordenados y actualizados en la mayoría de sus pacientes. Mantiene la confidencialidad y los presupuestos gestionados.","Registros clínicos validados, ordenados y actualizados. Mantiene la confidencialidad clínico-paciente y los presupuestos gestionados."] },
-  { key:"c5", label:"Conocimientos y autonomía", pct:"15%", tooltips:["No presenta conocimientos teóricos mínimos y es incapaz de modificar su planificación de manera autónoma. No solicita orientación docente.","Demuestra conocimientos teóricos pero con baja capacidad de modificar su planificación, solicitando más de 3 veces ayuda del docente.","Demuestra conocimientos teóricos y tiene capacidad de modificar su planificación con ayuda del docente en 2 a 3 ocasiones.","Demuestra teoría y buena capacidad de modificar su planificación clínica con ayuda docente en al menos una vez.","Demuestra siempre la teoría y capacidad de modificar su planificación de manera autónoma y sustentada."] },
-  { key:"c6", label:"Normas clínicas y bioseguridad", pct:"15%", tooltips:["No cumple las normas clínicas o bioseguridad con 3 a 4 faltas, o tiene 1 falta gravísima a la ética.","Presenta atrasos reiterados al término de sesión clínica, cumpliendo parcialmente las normas con más de 1 o 2 faltas.","Cumple parcialmente las normas clínicas o bioseguridad observando 1 o 2 faltas.","Cumple todas las normas clínicas y bioseguridad establecidas pero suele atrasar al término de la clínica.","Cumple todas las normas clínicas y bioseguridad establecidas y termina siempre a su hora clínica."] }
+
+const STUDENTS = [
+  "MORIN JOSEFA ALBILLAR BRAÑAS","MILLARAY BELÉN ALVEAR MONTOYA","FRANCESCA IGNACIA ANJARÍ CIOCCA",
+  "IARA VALENTINA ARANCIBIA TELLO","JAVIERA NICOL ARANDA FERNÁNDEZ","FRANCISCA CONSTANZA ARRIAGADA CÓRDOVA",
+  "CONSTANZA BELÉN ASTETE ESTAY","ANGELA SOFÍA BASUALDO BAZAES","CONSTANZA ANTONIA BELLO MENESES",
+  "DAYLIN IGNACIA BRAVO ARAVENA","CATALINA ANTONIA CABEZAS QUINTANA","JOSÉ IGNACIO CATALÁN GUINEO",
+  "SARAY NOEMÍ CATALÁN MÉNDEZ","FRANCISCA ROCIO DELGADO BARRIENTOS","FLAVIA ALEJANDRA DÍAZ BARRAZA",
+  "JAVIERA ALEJANDRA DÍAZ GAETE","IGNACIA PAZ BELÉN ELGUETA LAZO","VASTI SOFÍA ANTONIA ESCOBAR AHUMADA",
+  "MATÍAS FELIPE ESTRADA PÉREZ","BETZABET ELIZABETH ETCHEVERRY SAAVEDRA","JOAQUÍN ESTEBAN FUENZALIDA CAMPOS",
+  "AMBAR TAÍS GUZMÁN MORALES","VALERIA ESPERANZA HERRERA VERGARA","FRANCISCA IGNACIA HOLA MELLADO",
+  "IGNACIO ALFONSO LANAS DÍAZ","VALERIA CATALINA LARA GARRIDO","ANGELA VICTORIA LÓPEZ SAAVEDRA",
+  "FERNANDA IGNACIA MELLA ÁLVAREZ","ROBERTO SEBASTIÁN MELLADO VEGA","CORALY ANDREA MUÑOZ VIELMA",
+  "PAULA ANDREA OJEDA GAMARRA","NICOLETTE STEFANIA ORTEGA ORTEGA","BEATRIZ IGNACIA PARADA ROJAS",
+  "ANTONIA ROCÍO PAVIE SANTANA","ISIDORA PAZ RODRÍGUEZ BRAVO","ABEL ALEXIS ROJAS ARANCIBIA",
+  "DIEGO AUGUSTO ROJAS MOYA","DANIELLA CONSTANZA ROJAS ROJAS","NOSLEN ELIZABETH RUBIO ESCOBAR",
+  "FRANCO ALEXANDER SANDOVAL PIZARRO","YERISSIM FERNANDA SILVA BRAVO","CAMILO IGNACIO TORO AEDO",
+  "JOAQUÍN ALONSO TORRES LEÓN","MARTINA PAZ VALDÉS DURÁN","VALENTINA PAZ VARGAS RAMÍREZ",
+  "BENJAMÍN MAXIMILIANO VARGAS RODRÍGUEZ","MARIAN FERNANDA VERGARA VEGA","ANTONIA SCARLETT ZAPATA CUETO",
+  "FRANCISCA TRONCOSO"
 ];
+
+const CRITERIA = [
+  { key:"c1", label:"Planificación de la acción clínica", pct:"20%", tooltips:[
+    "No planifica su sesión clínica y carece del instrumental necesario para ejecutar su acción.",
+    "Planificación poco realista sin considerar los procedimientos o su complejidad. Carece del instrumental necesario.",
+    "Planificación poco realista. Faltan entre 2 a 3 instrumentales y/o materiales para realizar la acción.",
+    "Planificación realista y acorde a los protocolos. Al menos falta 1 material o instrumental para realizar la acción.",
+    "Planificación realista y acorde a los protocolos para cada procedimiento. Tiene siempre todo el instrumental necesario."
+  ]},
+  { key:"c2", label:"Comunicación en ambiente clínico", pct:"15%", tooltips:[
+    "No establece comunicación fluida ni efectiva. No mantiene el respeto ni utiliza lenguaje adecuado.",
+    "Comunicación poco fluida con dificultades al expresar sus ideas. Mantiene el respeto pero hay falencias en lenguaje técnico.",
+    "Comunicación poco fluida en el ambiente clínico con dificultades al expresar sus ideas. Mantiene el respeto y lenguaje técnico.",
+    "Comunicación fluida y efectiva, expresa sus ideas claramente y de manera respetuosa, con algunas falencias en lenguaje técnico.",
+    "Comunicación fluida y efectiva, expresa sus ideas claramente, de manera sintética, respetuosa y con lenguaje técnico correcto."
+  ]},
+  { key:"c3", label:"Retroalimentación y autocrítica", pct:"15%", tooltips:[
+    "Nula capacidad de recibir retroalimentación. Omite la guía docente, sin reflexión ni autocrítica a su práctica clínica.",
+    "Demuestra incomodidad al recibir retroalimentación. Omite la guía docente, con escasa capacidad reflexiva y autocrítica.",
+    "Desinteresado al recibir retroalimentación. Omite la guía docente, dificultando la mejora mediante práctica reflexiva.",
+    "Capaz de recibir retroalimentación e incorpora parcialmente los comentarios a su práctica. Presenta capacidad de autocrítica.",
+    "Incorpora los comentarios del docente a su práctica clínica y mejora mediante práctica reflexiva y autocrítica."
+  ]},
+  { key:"c4", label:"Registro clínico", pct:"20%", tooltips:[
+    "Registros desordenados, desactualizados y sin validar en todos los pacientes. Rompe la confidencialidad. Sin gestión de presupuestos.",
+    "Registros desordenados, desactualizados y no validados en la mayoría de los pacientes. Rompe la confidencialidad. Deficiente gestión de presupuestos.",
+    "Registros desordenados sin actualizar ni validar en al menos el 50% de sus pacientes, con presupuestos sin gestionar.",
+    "Registros validados, ordenados y actualizados en la mayoría de sus pacientes. Mantiene la confidencialidad y presupuestos gestionados.",
+    "Registros validados, ordenados y actualizados en todos los pacientes. Mantiene la confidencialidad y presupuestos gestionados."
+  ]},
+  { key:"c5", label:"Conocimientos y autonomía", pct:"15%", tooltips:[
+    "No presenta conocimientos teóricos mínimos y es incapaz de modificar su planificación de manera autónoma. No solicita orientación docente.",
+    "Demuestra conocimientos teóricos pero solicita más de 3 veces ayuda del docente para modificar su planificación.",
+    "Demuestra conocimientos teóricos y capacidad de modificar su planificación con ayuda del docente en 2 a 3 ocasiones.",
+    "Demuestra teoría y buena capacidad de modificar su planificación con ayuda docente en al menos una ocasión.",
+    "Demuestra siempre la teoría y capacidad de modificar su planificación de manera autónoma y sustentada."
+  ]},
+  { key:"c6", label:"Normas clínicas y bioseguridad", pct:"15%", tooltips:[
+    "No cumple las normas clínicas o bioseguridad con 3 a 4 faltas, o tiene 1 falta gravísima a la ética.",
+    "Presenta atrasos reiterados al término de sesión clínica, cumpliendo parcialmente las normas con más de 1 o 2 faltas.",
+    "Cumple parcialmente las normas clínicas o bioseguridad observando 1 o 2 faltas.",
+    "Cumple todas las normas clínicas y bioseguridad establecidas pero suele atrasar al término de la clínica.",
+    "Cumple todas las normas clínicas y bioseguridad establecidas y termina siempre a su hora clínica."
+  ]}
+];
+
 const WEIGHTS = [20,15,15,20,15,15];
 let selected=[],scores={},obs={},sent={};
+
 function shortName(n){const p=n.trim().split(" ");return p[0]+" "+p[p.length-1];}
 function getInitials(n){const p=n.trim().split(" ");return(p[0][0]+(p[1]?p[1][0]:"")).toUpperCase();}
-function filterStudents(){const q=document.getElementById("search-in").value.toLowerCase();document.querySelectorAll(".student-chip").forEach(c=>{c.style.display=c.dataset.name.includes(q)?"":"none";});}
-function renderPicker(){const pk=document.getElementById("picker");pk.innerHTML="";STUDENTS.forEach(s=>{const c=document.createElement("div");c.className="student-chip"+(selected.includes(s)?" selected":"");c.textContent=shortName(s);c.dataset.name=s.toLowerCase();c.onclick=()=>toggleStudent(s);pk.appendChild(c);});}
-function toggleStudent(s){if(selected.includes(s)){selected=selected.filter(x=>x!==s);}else{selected.push(s);if(!scores[s])scores[s]={};if(obs[s]===undefined)obs[s]="";}renderPicker();renderTable();checkSend();}
-function setScore(s,k,v){if(!scores[s])scores[s]={};if(scores[s][k]===v){delete scores[s][k];}else{scores[s][k]=v;}renderTable();checkSend();}
-function calcTotal(s){let t=0;CRITERIA.forEach((c,i)=>{const v=scores[s]&&scores[s][c.key];if(v!==undefined)t+=(v/4)*WEIGHTS[i];});return Math.round(t*10)/10;}
-function allFilled(s){return CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined)&&obs[s]&&obs[s].trim()!=="";}
+
+function filterStudents(){
+  const q=document.getElementById("search-in").value.toLowerCase();
+  document.querySelectorAll(".student-chip").forEach(c=>{c.style.display=c.dataset.name.includes(q)?"":"none";});
+}
+
+function renderPicker(){
+  const pk=document.getElementById("picker");pk.innerHTML="";
+  STUDENTS.forEach(s=>{
+    const c=document.createElement("div");
+    c.className="student-chip"+(selected.includes(s)?" selected":"");
+    c.textContent=shortName(s);c.dataset.name=s.toLowerCase();
+    c.onclick=()=>toggleStudent(s);pk.appendChild(c);
+  });
+}
+
+function toggleStudent(s){
+  if(selected.includes(s)){selected=selected.filter(x=>x!==s);}
+  else{selected.push(s);if(!scores[s])scores[s]={};if(obs[s]===undefined)obs[s]="";}
+  renderPicker();renderTable();
+}
+
+function setScore(idx,key,val){
+  const s=STUDENTS[idx];
+  if(!scores[s])scores[s]={};
+  if(scores[s][key]===val){delete scores[s][key];}else{scores[s][key]=val;}
+  renderTable();
+}
+
+function calcTotal(s){
+  let t=0;
+  CRITERIA.forEach((c,i)=>{const v=scores[s]&&scores[s][c.key];if(v!==undefined)t+=(v/4)*WEIGHTS[i];});
+  return Math.round(t*10)/10;
+}
+
+function allScores(s){return CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined);}
+function allFilled(s){return allScores(s)&&obs[s]&&obs[s].trim()!=="";}
+
 function renderTable(){
   const area=document.getElementById("table-area");
   if(selected.length===0){area.innerHTML='<div class="empty-state">👆 Selecciona uno o más alumnos arriba para comenzar la evaluación</div>';return;}
   let h='<div class="card" style="padding:0;overflow:visible"><div class="table-wrap"><table><thead><tr><th class="criteria-col">Criterio</th>';
-  selected.forEach(s=>{const done=allFilled(s),ws=sent[s];h+=`<th class="student-col">${getInitials(s)}<br><span style="font-weight:400;color:#888;font-size:10px">${shortName(s)}</span>${ws?'<span class="sent-badge">✓ enviado</span>':done?'<span class="ready-badge">✓ listo</span>':''}</th>`;});
+  selected.forEach(s=>{
+    const done=allFilled(s),ws=sent[s];
+    h+=`<th class="student-col">${getInitials(s)}<br><span style="font-weight:400;color:#888;font-size:10px">${shortName(s)}</span>${ws?'<span class="sent-badge">✓ enviado</span>':done?'<span class="ready-badge">✓ listo</span>':''}</th>`;
+  });
   h+='</tr></thead><tbody>';
   CRITERIA.forEach(c=>{
     h+=`<tr><td class="criteria-label">${c.label}<span class="pct-badge">${c.pct}</span></td>`;
     selected.forEach(s=>{
+      const idx=STUDENTS.indexOf(s);
       const cur=scores[s]&&scores[s][c.key],ws=sent[s];
       h+='<td class="score-cell"><div class="score-btns">';
       [0,1,2,3,4].forEach(v=>{
-        const tip=c.tooltips[v].replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        h+=`<div class="sb-wrap"><button class="sb${cur===v?' sel':''}" ${ws?'disabled':''} onclick="setScore('${s.replace(/'/g,"\\'")}','${c.key}',${v})">${v}</button><div class="tooltip"><strong>${v} pts:</strong> ${tip}</div></div>`;
+        const tip=c.tooltips[v].replace(/"/g,"&quot;");
+        h+=`<div class="sb-wrap"><button class="sb${cur===v?' sel':''}" ${ws?'disabled':''} onclick="setScore(${idx},'${c.key}',${v})">${v}</button><div class="tooltip"><strong>${v} pts:</strong> ${c.tooltips[v]}</div></div>`;
       });
       h+='</div></td>';
     });
     h+='</tr>';
   });
-  h+='<tr><td class="criteria-label" style="font-weight:500;color:#1a1a1a">Observaciones</td>';
-  selected.forEach(s=>{h+=`<td class="obs-cell"><textarea placeholder="Obligatorio..." ${sent[s]?'disabled':''} onchange="obs['${s.replace(/'/g,"\\'")}' ]=this.value">${obs[s]||''}</textarea></td>`;});
+  h+='<tr><td class="criteria-label" style="font-weight:500;color:#1a1a1a">Observaciones <span style="color:#c0392b;font-size:10px">(obligatorio)</span></td>';
+  selected.forEach(s=>{
+    const idx=STUDENTS.indexOf(s);
+    h+=`<td class="obs-cell"><textarea placeholder="Obligatorio..." ${sent[s]?'disabled':''} oninput="setObs(${idx},this.value)">${obs[s]||''}</textarea></td>`;
+  });
   h+='</tr><tr class="total-row"><td class="criteria-label" style="font-weight:600;color:#1a1a1a">Total ponderado</td>';
-  selected.forEach(s=>{const t=calcTotal(s),done=allFilled(s);h+=`<td style="color:${done?'#0F6E56':'#aaa'}">${done?t+' / 100':'–'}</td>`;});
+  selected.forEach(s=>{
+    const t=calcTotal(s),done=allScores(s);
+    h+=`<td style="color:${done?'#0F6E56':'#aaa'}">${done?t+' / 100':'–'}</td>`;
+  });
   h+='</tr></tbody></table></div></div>';
   area.innerHTML=h;
 }
+
+function setObs(idx,val){obs[STUDENTS[idx]]=val;}
+
 function validName(n){const p=n.trim().split(/\s+/);return p.length>=2&&p[0].length>1&&p[1].length>1;}
-function checkSend(){document.getElementById("send-btn").disabled=false;}
+
 function validate(){
   const docente=document.getElementById("docente-in").value.trim();
   const errors=[];
@@ -141,13 +240,14 @@ function validate(){
   else if(!validName(docente)){errors.push("⚠️ Ingresa al menos un nombre y un apellido.");}
   if(selected.length===0){errors.push("⚠️ Selecciona al menos un alumno.");}
   else{
-    const sinPuntajes=selected.filter(s=>!sent[s]&&!CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined));
-    const sinObs=selected.filter(s=>!sent[s]&&CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined)&&(!obs[s]||obs[s].trim()===""));
+    const sinPuntajes=selected.filter(s=>!sent[s]&&!allScores(s));
+    const sinObs=selected.filter(s=>!sent[s]&&allScores(s)&&(!obs[s]||obs[s].trim()===""));
     if(sinPuntajes.length>0)errors.push("⚠️ Faltan puntajes en: "+sinPuntajes.map(s=>shortName(s)).join(", ")+".");
     if(sinObs.length>0)errors.push("⚠️ Falta observación en: "+sinObs.map(s=>shortName(s)).join(", ")+".");
   }
   return errors;
 }
+
 async function sendAll(){
   const docente=document.getElementById("docente-in").value.trim();
   const msg=document.getElementById("status-msg");
@@ -155,20 +255,23 @@ async function sendAll(){
   if(errors.length>0){msg.innerHTML=errors.join("<br>");msg.style.color="#c0392b";return;}
   const toSend=selected.filter(s=>allFilled(s)&&!sent[s]);
   if(!toSend.length)return;
-  const btn=document.getElementById("send-btn"),msg=document.getElementById("status-msg"),bar=document.getElementById("progress-bar"),fill=document.getElementById("progress-fill");
-  btn.disabled=true;bar.style.display="block";fill.style.width="0%";
+  const bar=document.getElementById("progress-bar"),fill=document.getElementById("progress-fill");
+  msg.style.color="#666";bar.style.display="block";fill.style.width="0%";
   let ok=0;
   for(let i=0;i<toSend.length;i++){
     const s=toSend[i];msg.textContent=`Enviando ${i+1} de ${toSend.length}: ${shortName(s)}...`;
     const scoreArr=CRITERIA.map(c=>scores[s][c.key]);
-    try{await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify({docente,alumno:s,scores:scoreArr,obs:obs[s]||""})});sent[s]=true;ok++;}
-    catch(e){msg.textContent=`Error enviando ${shortName(s)}. Intenta de nuevo.`;}
+    try{
+      await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify({docente,alumno:s,scores:scoreArr,obs:obs[s]||""})});
+      sent[s]=true;ok++;
+    }catch(e){msg.style.color="#c0392b";msg.textContent=`Error enviando ${shortName(s)}. Intenta de nuevo.`;}
     fill.style.width=Math.round(((i+1)/toSend.length)*100)+"%";
     await new Promise(r=>setTimeout(r,600));
   }
-  msg.style.color="#666";msg.textContent=`✓ ${ok} evaluación(es) guardadas en Google Sheets`;
-  renderTable();checkSend();
+  msg.style.color="#0F6E56";msg.textContent=`✓ ${ok} evaluación(es) guardadas en Google Sheets`;
+  renderTable();
 }
+
 renderPicker();renderTable();
 </script>
 </body>

@@ -132,9 +132,27 @@ function renderTable(){
   h+='</tr></tbody></table></div></div>';
   area.innerHTML=h;
 }
-function checkSend(){const d=document.getElementById("docente-in").value.trim();const ok=selected.some(s=>allFilled(s)&&!sent[s]);document.getElementById("send-btn").disabled=!d||!ok;}
+function validName(n){const p=n.trim().split(/\s+/);return p.length>=2&&p[0].length>1&&p[1].length>1;}
+function checkSend(){document.getElementById("send-btn").disabled=false;}
+function validate(){
+  const docente=document.getElementById("docente-in").value.trim();
+  const errors=[];
+  if(!docente){errors.push("⚠️ Debes ingresar tu nombre.");}
+  else if(!validName(docente)){errors.push("⚠️ Ingresa al menos un nombre y un apellido.");}
+  if(selected.length===0){errors.push("⚠️ Selecciona al menos un alumno.");}
+  else{
+    const sinPuntajes=selected.filter(s=>!sent[s]&&!CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined));
+    const sinObs=selected.filter(s=>!sent[s]&&CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined)&&(!obs[s]||obs[s].trim()===""));
+    if(sinPuntajes.length>0)errors.push("⚠️ Faltan puntajes en: "+sinPuntajes.map(s=>shortName(s)).join(", ")+".");
+    if(sinObs.length>0)errors.push("⚠️ Falta observación en: "+sinObs.map(s=>shortName(s)).join(", ")+".");
+  }
+  return errors;
+}
 async function sendAll(){
   const docente=document.getElementById("docente-in").value.trim();
+  const msg=document.getElementById("status-msg");
+  const errors=validate();
+  if(errors.length>0){msg.innerHTML=errors.join("<br>");msg.style.color="#c0392b";return;}
   const toSend=selected.filter(s=>allFilled(s)&&!sent[s]);
   if(!toSend.length)return;
   const btn=document.getElementById("send-btn"),msg=document.getElementById("status-msg"),bar=document.getElementById("progress-bar"),fill=document.getElementById("progress-fill");
@@ -148,7 +166,7 @@ async function sendAll(){
     fill.style.width=Math.round(((i+1)/toSend.length)*100)+"%";
     await new Promise(r=>setTimeout(r,600));
   }
-  msg.textContent=`✓ ${ok} evaluación(es) guardadas en Google Sheets`;
+  msg.style.color="#666";msg.textContent=`✓ ${ok} evaluación(es) guardadas en Google Sheets`;
   renderTable();checkSend();
 }
 renderPicker();renderTable();

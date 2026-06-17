@@ -68,7 +68,7 @@ a.sheet-link:hover { text-decoration: underline; }
     <div class="top-bar">
       <label for="docente-in">Nombre docente</label>
       <input type="text" id="docente-in" class="docente-input" placeholder="Tu nombre completo" oninput="checkSend()" />
-      <a class="sheet-link" href="https://docs.google.com/spreadsheets/d/1CqvHzZDNNqFT-xMyQOrnH2sSAeXFxjmGnApIzdZXQ68/edit" target="_blank">Ver Google Sheets →</a>
+      
     </div>
   </div>
   <div class="card">
@@ -105,7 +105,7 @@ function renderPicker(){const pk=document.getElementById("picker");pk.innerHTML=
 function toggleStudent(s){if(selected.includes(s)){selected=selected.filter(x=>x!==s);}else{selected.push(s);if(!scores[s])scores[s]={};if(obs[s]===undefined)obs[s]="";}renderPicker();renderTable();checkSend();}
 function setScore(s,k,v){if(!scores[s])scores[s]={};if(scores[s][k]===v){delete scores[s][k];}else{scores[s][k]=v;}renderTable();checkSend();}
 function calcTotal(s){let t=0;CRITERIA.forEach((c,i)=>{const v=scores[s]&&scores[s][c.key];if(v!==undefined)t+=(v/4)*WEIGHTS[i];});return Math.round(t*10)/10;}
-function allFilled(s){return CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined);}
+function allFilled(s){return CRITERIA.every(c=>scores[s]&&scores[s][c.key]!==undefined)&&obs[s]&&obs[s].trim()!=="";}
 function renderTable(){
   const area=document.getElementById("table-area");
   if(selected.length===0){area.innerHTML='<div class="empty-state">👆 Selecciona uno o más alumnos arriba para comenzar la evaluación</div>';return;}
@@ -126,7 +126,7 @@ function renderTable(){
     h+='</tr>';
   });
   h+='<tr><td class="criteria-label" style="font-weight:500;color:#1a1a1a">Observaciones</td>';
-  selected.forEach(s=>{h+=`<td class="obs-cell"><textarea placeholder="Opcional..." ${sent[s]?'disabled':''} onchange="obs['${s.replace(/'/g,"\\'")}' ]=this.value">${obs[s]||''}</textarea></td>`;});
+  selected.forEach(s=>{h+=`<td class="obs-cell"><textarea placeholder="Obligatorio..." ${sent[s]?'disabled':''} onchange="obs['${s.replace(/'/g,"\\'")}' ]=this.value">${obs[s]||''}</textarea></td>`;});
   h+='</tr><tr class="total-row"><td class="criteria-label" style="font-weight:600;color:#1a1a1a">Total ponderado</td>';
   selected.forEach(s=>{const t=calcTotal(s),done=allFilled(s);h+=`<td style="color:${done?'#0F6E56':'#aaa'}">${done?t+' / 100':'–'}</td>`;});
   h+='</tr></tbody></table></div></div>';
